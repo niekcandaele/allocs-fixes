@@ -117,6 +117,10 @@ namespace AllocsFixes.NetConnections.Servers.Web
                     new ApiHandler("/api/")
                 );
 
+                handlers.Add(
+                    "/ws/",
+                    new WebSocketHandler()
+                );
 
                 connectionHandler = new ConnectionHandler();
 
