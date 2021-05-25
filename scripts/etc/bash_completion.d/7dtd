@@ -1,0 +1,28 @@
+if [ $(id -u) -eq 0 ]; then
+	_sdtd() {
+		. /usr/local/lib/7dtd/common.sh
+		checkRootLoadConf
+
+		local cur prev opts
+		COMPREPLY=()
+		cur="${COMP_WORDS[COMP_CWORD]}"
+		prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+		opts="help $(listCommands)"
+
+		case "${COMP_CWORD}" in
+			1)
+				COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+				return 0
+				;;
+			*)
+				if [ "$(type -t sdtdCommand$(camelcasePrep ${COMP_WORDS[1]})Expects)" = "function" ]; then
+					local words="$(sdtdCommand$(camelcasePrep ${COMP_WORDS[1]})Expects $COMP_CWORD $prev)"
+					COMPREPLY=( $(compgen -W "$words" -- ${cur}) )
+					return 0
+				fi
+				;;
+		esac
+	}
+	complete -F _sdtd 7dtd.sh
+fi

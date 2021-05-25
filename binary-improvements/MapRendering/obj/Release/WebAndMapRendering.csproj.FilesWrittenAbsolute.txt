@@ -1,0 +1,6 @@
+/home/catalysm/code/external/allocs-fixes/binary-improvements/MapRendering/obj/Release/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/home/catalysm/code/external/allocs-fixes/binary-improvements/bin/Mods/Allocs_WebAndMapRendering/ModInfo.xml
+/home/catalysm/code/external/allocs-fixes/binary-improvements/bin/Mods/Allocs_WebAndMapRendering/steam-intermediate.cer
+/home/catalysm/code/external/allocs-fixes/binary-improvements/bin/Mods/Allocs_WebAndMapRendering/steam-rootca.cer
+/home/catalysm/code/external/allocs-fixes/binary-improvements/bin/Mods/Allocs_WebAndMapRendering/MapRendering.dll
+/home/catalysm/code/external/allocs-fixes/binary-improvements/MapRendering/obj/Release/MapRendering.dll
