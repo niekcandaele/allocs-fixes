@@ -119,7 +119,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
 
                 handlers.Add(
                     "/ws/",
-                    new WebSocketHandler()
+                    new WebSocketHandler(_listener, "ws")
                 );
 
                 connectionHandler = new ConnectionHandler();
@@ -180,7 +180,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
 		private readonly CustomSampler handlerSampler = CustomSampler.Create ("Handler");
 #endif
 
-        private void HandleRequest(IAsyncResult _result)
+        private async void HandleRequest(IAsyncResult _result)
         {
             if (!_listener.IsListening)
             {
