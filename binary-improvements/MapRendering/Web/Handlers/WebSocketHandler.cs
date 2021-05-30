@@ -18,7 +18,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
 
         private HttpListener _listener { get; set; }
 
-        public override async void HandleRequest(HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+        public override async void HandleRequest(WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
             int _permissionLevel)
         {
             Log.Out("Handling ws path");
