@@ -27,19 +27,19 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
                 HttpListenerContext context = _listener.GetContext();
                 Log.Out("got the context blyat");
                 Log.Out(context.Request.ToString());
-                /*                 if (context.Request.IsWebSocketRequest)
-                                { */
-                Log.Out("Initialized a Websocket");
-                WebSocketContext webSocketContext = await context.AcceptWebSocketAsync(subProtocol: null);
-                WebSocket websocket = webSocketContext.WebSocket;
-                await SendString(websocket, "Hello World");
-                //                }
-                /*                 else
-                                {
-                                    Log.Out("Tis geen WS");
-                                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                                    context.Response.Close();
-                                } */
+                if (context.Request.IsWebSocketRequest)
+                {
+                    Log.Out("Initialized a Websocket");
+                    WebSocketContext webSocketContext = await context.AcceptWebSocketAsync(subProtocol: null);
+                    WebSocket websocket = webSocketContext.WebSocket;
+                    await SendString(websocket, "Hello World");
+                }
+                else
+                {
+                    Log.Out("Tis geen WS");
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.Close();
+                }
 
                 Log.Out("tot ier");
             }

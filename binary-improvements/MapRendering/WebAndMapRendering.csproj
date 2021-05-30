@@ -30,6 +30,9 @@
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="WebsocketSharp">
+      <HintPath>..\7dtd-binaries\websocket-sharp.dll</HintPath>
+    </Reference>  
     <Reference Include="LogLibrary">
       <HintPath>..\7dtd-binaries\LogLibrary.dll</HintPath>
       <Private>False</Private>
@@ -93,7 +96,6 @@
     <Compile Include="Web\Handlers\SimpleRedirectHandler.cs" />
     <Compile Include="Web\Handlers\StaticHandler.cs" />
     <Compile Include="Web\Handlers\SessionHandler.cs" />
-    <Compile Include="Web\Handlers\WebSocketHandler.cs" />
     <Compile Include="Web\API\ExecuteConsoleCommand.cs" />
     <Compile Include="Commands\ReloadWebPermissions.cs" />
     <Compile Include="Web\Handlers\UserStatusHandler.cs" />
@@ -108,6 +110,8 @@
     <Compile Include="Web\API\GetAllowedCommands.cs" />
     <Compile Include="Commands\EnableOpenIDDebug.cs" />
     <Compile Include="Web\API\GetPlayerInventories.cs" />
+    <Compile Include="Web\WSServices\LogService.cs" />
+
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

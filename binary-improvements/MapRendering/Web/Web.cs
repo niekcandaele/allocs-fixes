@@ -8,9 +8,11 @@ using System.Text;
 using System.Threading;
 using AllocsFixes.FileCache;
 using AllocsFixes.NetConnections.Servers.Web.Handlers;
+using AllocsFixes.NetConnections.Servers.Web.WSServices;
 using UnityEngine;
 using UnityEngine.Profiling;
 
+using WebSocketSharp.Server;
 namespace AllocsFixes.NetConnections.Servers.Web
 {
     public class Web : IConsoleServer
@@ -20,6 +22,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
         public static int currentHandlers;
         public static long totalHandlingTime = 0;
         private readonly HttpListener _listener = new HttpListener();
+        private readonly HttpServer httpsv;
         private readonly string dataFolder;
         private readonly Dictionary<string, PathHandler> handlers = new CaseInsensitiveStringDictionary<PathHandler>();
         private readonly bool useStaticCache;
@@ -117,19 +120,27 @@ namespace AllocsFixes.NetConnections.Servers.Web
                     new ApiHandler("/api/")
                 );
 
-                handlers.Add(
-                    "/ws/",
-                    new WebSocketHandler(_listener, "ws")
-                );
-
                 connectionHandler = new ConnectionHandler();
 
-                _listener.Prefixes.Add(string.Format("http://*:{0}/", webPort + 2));
-                _listener.Start();
+                //_listener.Prefixes.Add(string.Format("http://*:{0}/", webPort + 2));
+                //_listener.Start();
+
+                httpsv = new HttpServer(System.Net.IPAddress.Any, webPort + 2);
+                httpsv.Start();
+
+                httpsv.OnGet += (sender, e) =>
+                {
+                    byte[] contents = Encoding.ASCII.GetBytes("Hello world");
+                    e.Response.ContentLength64 = contents.LongLength;
+                    e.Response.Close(contents, true);
+                    Log.Out("Responded to GET");
+                };
+
+                httpsv.AddWebSocketService<LogService>("/log");
 
                 SdtdConsole.Instance.RegisterServer(this);
 
-                _listener.BeginGetContext(HandleRequest, _listener);
+                //_listener.BeginGetContext(HandleRequest, _listener);
 
                 Log.Out("Started Webserver on " + (webPort + 2));
             }
