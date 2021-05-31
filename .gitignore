@@ -1,0 +1,7 @@
+# build folders
+binary-improvements/bin/
+binary-improvements/obj/
+
+binary-improvements/7dtd-server-fixes/obj/
+
+*.cache
