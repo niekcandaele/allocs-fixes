@@ -40,7 +40,8 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
             {
                 if (_user != null)
                 {
-                    _resp.Redirect("/static/index.html");
+                    _resp.StatusCode = (int)HttpStatusCode.Redirect;
+                    _resp.SetHeader("Location", "/static/index.html");
                     return;
                 }
 
@@ -55,7 +56,8 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
                     WebSocketSharp.Net.Cookie cookie = new WebSocketSharp.Net.Cookie("sid", "", "/");
                     cookie.Expired = true;
                     _resp.AppendCookie(cookie);
-                    _resp.Redirect("/static/index.html");
+                    _resp.StatusCode = (int)HttpStatusCode.Redirect;
+                    _resp.SetHeader("Location", "/static/index.html");
                     return;
                 }
 
