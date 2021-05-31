@@ -135,13 +135,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
 
                 httpsv.OnGet += (sender, e) =>
                 {
-                    Log.Out("OnGet");
                     HandleRequest(e);
-                    /*                     e.Response.StatusCode = 200;
-                                        byte[] content = System.Text.Encoding.Unicode.GetBytes("Hello!");
-                                        e.Response.ContentLength64 = content.LongLength;
-                                        e.Response.Close(content, true);
-                                        Log.Out("Closed response"); */
                 };
 
                 Log.Out("Started Webserver on " + (webPort + 2));
@@ -195,7 +189,6 @@ namespace AllocsFixes.NetConnections.Servers.Web
 
         private void HandleRequest(HttpRequestEventArgs eventArgs)
         {
-            Log.Out("Inside HandleRequest");
             if (!_listener.IsListening)
             {
                 return;
@@ -321,7 +314,6 @@ namespace AllocsFixes.NetConnections.Servers.Web
 
         private int DoAuthentication(WebSocketSharp.Net.HttpListenerRequest _req, out WebConnection _con)
         {
-            Log.Out("Doing authentication");
             _con = null;
 
             string sessionId = null;
