@@ -13,7 +13,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers {
 			get { return moduleName; }
 		}
 
-		public abstract void HandleRequest (HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+		public abstract void HandleRequest (WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
 			int _permissionLevel);
 
 		public bool IsAuthorizedForHandler (WebConnection _user, int _permissionLevel) {

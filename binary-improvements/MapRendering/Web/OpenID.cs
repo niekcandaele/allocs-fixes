@@ -131,7 +131,7 @@ namespace AllocsFixes.NetConnections.Servers.Web {
 			return STEAM_LOGIN + '?' + buildUrlParams (queryParams);
 		}
 
-		public static ulong Validate (HttpListenerRequest _req) {
+		public static ulong Validate (WebSocketSharp.Net.HttpListenerRequest _req) {
 			string mode = getValue (_req, "openid.mode");
 			if (mode == "cancel") {
 				Log.Warning ("Steam OpenID login canceled");
@@ -214,7 +214,7 @@ namespace AllocsFixes.NetConnections.Servers.Web {
 			return string.Join ("&", paramsArr);
 		}
 
-		private static string getValue (HttpListenerRequest _req, string _name) {
+		private static string getValue (WebSocketSharp.Net.HttpListenerRequest _req, string _name) {
 			NameValueCollection nvc = _req.QueryString;
 			if (nvc [_name] == null) {
 				throw new MissingMemberException ("OpenID parameter \"" + _name + "\" missing");
@@ -223,7 +223,7 @@ namespace AllocsFixes.NetConnections.Servers.Web {
 			return nvc [_name];
 		}
 
-		private static void PrintOpenIdResponse (HttpListenerRequest _req) {
+		private static void PrintOpenIdResponse (WebSocketSharp.Net.HttpListenerRequest _req) {
 			NameValueCollection nvc = _req.QueryString;
 			for (int i = 0; i < nvc.Count; i++) {
 				Log.Out ("   " + nvc.GetKey (i) + " = " + nvc [i]);

@@ -23,7 +23,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers {
 			}
 		}
 
-		public override void HandleRequest (HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+		public override void HandleRequest (WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
 			int _permissionLevel) {
 			string subpath = _req.Url.AbsolutePath.Remove (0, staticPart.Length);
 
@@ -32,7 +32,8 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers {
 
 			if (subpath.StartsWith ("verify")) {
 				if (_user != null) {
-					_resp.Redirect ("/static/index.html");
+                    _resp.StatusCode = (int)HttpStatusCode.Redirect;
+                    _resp.SetHeader("Location", "/static/index.html");
 					return;
 				}
 
@@ -41,10 +42,11 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers {
 			} else if (subpath.StartsWith ("logout")) {
 				if (_user != null) {
 					parent.connectionHandler.LogOut (_user.SessionID);
-					Cookie cookie = new Cookie ("sid", "", "/");
+					WebSocketSharp.Net.Cookie cookie = new WebSocketSharp.Net.Cookie ("sid", "", "/");
 					cookie.Expired = true;
 					_resp.AppendCookie (cookie);
-					_resp.Redirect ("/static/index.html");
+                    _resp.StatusCode = (int)HttpStatusCode.Redirect;
+                    _resp.SetHeader("Location", "/static/index.html");
 					return;
 				}
 

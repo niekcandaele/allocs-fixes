@@ -23,11 +23,11 @@ namespace AllocsFixes.NetConnections.Servers.Web {
 		private readonly string command;
 		private readonly string parameters;
 
-		private readonly HttpListenerResponse response;
+		private readonly WebSocketSharp.Net.HttpListenerResponse response;
 		private readonly ResultType responseType;
 
 		public WebCommandResult (string _command, string _parameters, ResultType _responseType,
-			HttpListenerResponse _response) {
+			WebSocketSharp.Net.HttpListenerResponse _response) {
 			Interlocked.Increment (ref handlingCount);
 			Interlocked.Increment (ref currentHandlers);
 

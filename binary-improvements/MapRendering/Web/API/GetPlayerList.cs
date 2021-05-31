@@ -16,7 +16,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.API {
 		private static readonly CustomSampler jsonSerializeSampler = CustomSampler.Create ("JSON_Build");
 #endif
 
-		public override void HandleRequest (HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+		public override void HandleRequest (WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
 			int _permissionLevel) {
 			AdminTools admTools = GameManager.Instance.adminTools;
 			_user = _user ?? new WebConnection ("", IPAddress.None, 0L);

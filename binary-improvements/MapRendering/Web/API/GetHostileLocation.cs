@@ -7,7 +7,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.API {
 	internal class GetHostileLocation : WebAPI {
 		private readonly List<EntityEnemy> enemies = new List<EntityEnemy> ();
 
-		public override void HandleRequest (HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+		public override void HandleRequest (WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
 			int _permissionLevel) {
 			JSONArray hostilesJsResult = new JSONArray ();
 

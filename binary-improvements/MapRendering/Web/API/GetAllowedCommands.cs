@@ -3,7 +3,7 @@ using AllocsFixes.JSON;
 
 namespace AllocsFixes.NetConnections.Servers.Web.API {
 	public class GetAllowedCommands : WebAPI {
-		public override void HandleRequest (HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+		public override void HandleRequest (WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
 			int _permissionLevel) {
 			JSONObject result = new JSONObject ();
 			JSONArray entries = new JSONArray ();

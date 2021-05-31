@@ -8,8 +8,11 @@ using System.Text;
 using System.Threading;
 using AllocsFixes.FileCache;
 using AllocsFixes.NetConnections.Servers.Web.Handlers;
+using AllocsFixes.NetConnections.Servers.Web.WSServices;
 using UnityEngine;
 using UnityEngine.Profiling;
+
+using WebSocketSharp.Server;
 
 namespace AllocsFixes.NetConnections.Servers.Web
 {
@@ -19,7 +22,8 @@ namespace AllocsFixes.NetConnections.Servers.Web
         public static int handlingCount;
         public static int currentHandlers;
         public static long totalHandlingTime = 0;
-        private readonly HttpListener _listener = new HttpListener();
+        private readonly WebSocketSharp.Net.HttpListener _listener;
+        private readonly HttpServer httpsv;
         private readonly string dataFolder;
         private readonly Dictionary<string, PathHandler> handlers = new CaseInsensitiveStringDictionary<PathHandler>();
         private readonly bool useStaticCache;
@@ -120,13 +124,19 @@ namespace AllocsFixes.NetConnections.Servers.Web
 
                 connectionHandler = new ConnectionHandler();
 
+                httpsv = new HttpServer(System.Net.IPAddress.Any, webPort + 2);
+                httpsv.Start();
+                _listener = httpsv.Listener;
                 _listener.Prefixes.Add(string.Format("http://*:{0}/", webPort + 2));
-                _listener.Start();
+
+                httpsv.AddWebSocketService<LogService>("/log");
 
                 SdtdConsole.Instance.RegisterServer(this);
 
-                _listener.BeginGetContext(HandleRequest, _listener);
-
+                httpsv.OnGet += (sender, e) =>
+                {
+                    HandleRequest(e);
+                };
                 Log.Out("Started Webserver on " + (webPort + 2));
             }
             catch (Exception e)
@@ -158,7 +168,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
             // Do nothing, handled by LogBuffer internally
         }
 
-        public static bool isSslRedirected(HttpListenerRequest _req)
+        public static bool isSslRedirected(WebSocketSharp.Net.HttpListenerRequest _req)
         {
             string proto = _req.Headers["X-Forwarded-Proto"];
             if (!string.IsNullOrEmpty(proto))
@@ -176,7 +186,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
 		private readonly CustomSampler handlerSampler = CustomSampler.Create ("Handler");
 #endif
 
-        private void HandleRequest(IAsyncResult _result)
+        private void HandleRequest(HttpRequestEventArgs eventArgs)
         {
             if (!_listener.IsListening)
             {
@@ -192,16 +202,13 @@ namespace AllocsFixes.NetConnections.Servers.Web
 			HttpListenerContext ctx = _listener.EndGetContext (_result);
 			try {
 #else
-            HttpListenerContext ctx = _listener.EndGetContext(_result);
-            _listener.BeginGetContext(HandleRequest, _listener);
 #endif
             try
             {
-                HttpListenerRequest request = ctx.Request;
-                HttpListenerResponse response = ctx.Response;
-                response.SendChunked = false;
 
-                response.ProtocolVersion = HttpProtocolVersion;
+                WebSocketSharp.Net.HttpListenerRequest request = eventArgs.Request;
+                WebSocketSharp.Net.HttpListenerResponse response = eventArgs.Response;
+                response.SendChunked = false;
 
                 WebConnection conn;
 #if ENABLE_PROFILER
@@ -218,9 +225,10 @@ namespace AllocsFixes.NetConnections.Servers.Web
 
                 if (conn != null)
                 {
-                    Cookie cookie = new Cookie("sid", conn.SessionID, "/");
+                    WebSocketSharp.Net.Cookie cookie = new WebSocketSharp.Net.Cookie("sid", conn.SessionID, "/");
                     cookie.Expired = false;
-                    cookie.Expires = new DateTime(2020, 1, 1);
+                    DateTime now = DateTime.Now;
+                    cookie.Expires = now.AddDays(14);
                     cookie.HttpOnly = true;
                     cookie.Secure = false;
                     response.AppendCookie(cookie);
@@ -291,10 +299,6 @@ namespace AllocsFixes.NetConnections.Servers.Web
             }
             finally
             {
-                if (ctx != null && !ctx.Response.SendChunked)
-                {
-                    ctx.Response.Close();
-                }
 
                 //					msw.Stop ();
                 //					totalHandlingTime += msw.ElapsedMicroseconds;
@@ -309,7 +313,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
 #endif
         }
 
-        private int DoAuthentication(HttpListenerRequest _req, out WebConnection _con)
+        private int DoAuthentication(WebSocketSharp.Net.HttpListenerRequest _req, out WebConnection _con)
         {
             _con = null;
 
@@ -368,7 +372,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
             return GUEST_PERMISSION_LEVEL;
         }
 
-        public static void SetResponseTextContent(HttpListenerResponse _resp, string _text)
+        public static void SetResponseTextContent(WebSocketSharp.Net.HttpListenerResponse _resp, string _text)
         {
             byte[] buf = Encoding.UTF8.GetBytes(_text);
             _resp.ContentLength64 = buf.Length;
