@@ -133,8 +133,16 @@ namespace AllocsFixes.NetConnections.Servers.Web
 
                 SdtdConsole.Instance.RegisterServer(this);
 
-
-                _listener.BeginGetContext(HandleRequest, _listener);
+                httpsv.OnGet += (sender, e) =>
+                {
+                    Log.Out("OnGet");
+                    HandleRequest(e);
+                    /*                     e.Response.StatusCode = 200;
+                                        byte[] content = System.Text.Encoding.Unicode.GetBytes("Hello!");
+                                        e.Response.ContentLength64 = content.LongLength;
+                                        e.Response.Close(content, true);
+                                        Log.Out("Closed response"); */
+                };
 
                 Log.Out("Started Webserver on " + (webPort + 2));
             }
@@ -185,8 +193,9 @@ namespace AllocsFixes.NetConnections.Servers.Web
 		private readonly CustomSampler handlerSampler = CustomSampler.Create ("Handler");
 #endif
 
-        private void HandleRequest(IAsyncResult _result)
+        private void HandleRequest(HttpRequestEventArgs eventArgs)
         {
+            Log.Out("Inside HandleRequest");
             if (!_listener.IsListening)
             {
                 return;
@@ -202,14 +211,12 @@ namespace AllocsFixes.NetConnections.Servers.Web
 			try {
 #else
 
-            WebSocketSharp.Net.HttpListenerContext ctx = _listener.EndGetContext(_result);
-            _listener.BeginGetContext(HandleRequest, _listener);
 #endif
             try
             {
 
-                WebSocketSharp.Net.HttpListenerRequest request = ctx.Request;
-                WebSocketSharp.Net.HttpListenerResponse response = ctx.Response;
+                WebSocketSharp.Net.HttpListenerRequest request = eventArgs.Request;
+                WebSocketSharp.Net.HttpListenerResponse response = eventArgs.Response;
                 response.SendChunked = false;
 
                 WebConnection conn;
@@ -300,11 +307,6 @@ namespace AllocsFixes.NetConnections.Servers.Web
             }
             finally
             {
-                if (ctx != null && !ctx.Response.SendChunked)
-                {
-                    ctx.Response.Close();
-                }
-
                 //					msw.Stop ();
                 //					totalHandlingTime += msw.ElapsedMicroseconds;
                 //					Log.Out ("Web.HandleRequest(): Took {0} µs", msw.ElapsedMicroseconds);
@@ -312,7 +314,6 @@ namespace AllocsFixes.NetConnections.Servers.Web
             }
 #if ENABLE_PROFILER
 			} finally {
-				_listener.BeginGetContext (HandleRequest, _listener);
 				Profiler.EndThreadProfiling ();
 			}
 #endif
@@ -320,6 +321,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
 
         private int DoAuthentication(WebSocketSharp.Net.HttpListenerRequest _req, out WebConnection _con)
         {
+            Log.Out("Doing authentication");
             _con = null;
 
             string sessionId = null;
