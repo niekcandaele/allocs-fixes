@@ -229,7 +229,8 @@ namespace AllocsFixes.NetConnections.Servers.Web
                 {
                     WebSocketSharp.Net.Cookie cookie = new WebSocketSharp.Net.Cookie("sid", conn.SessionID, "/");
                     cookie.Expired = false;
-                    cookie.Expires = new DateTime(2020, 1, 1);
+                    DateTime now = DateTime.Now;
+                    cookie.Expires = now.AddDays(14);
                     cookie.HttpOnly = true;
                     cookie.Secure = false;
                     response.AppendCookie(cookie);
