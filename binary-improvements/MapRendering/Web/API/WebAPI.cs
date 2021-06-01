@@ -16,7 +16,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.API {
 		private static readonly CustomSampler netWriteSampler = CustomSampler.Create ("JSON_Write");
 #endif
 
-		public static void WriteJSON (HttpListenerResponse _resp, JSONNode _root) {
+		public static void WriteJSON (WebSocketSharp.Net.HttpListenerResponse _resp, JSONNode _root) {
 #if ENABLE_PROFILER
 			jsonSerializeSampler.Begin ();
 #endif
@@ -36,7 +36,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.API {
 #endif
 		}
 
-		public static void WriteText (HttpListenerResponse _resp, string _text) {
+		public static void WriteText (WebSocketSharp.Net.HttpListenerResponse _resp, string _text) {
 			byte[] buf = Encoding.UTF8.GetBytes (_text);
 			_resp.ContentLength64 = buf.Length;
 			_resp.ContentType = "text/plain";
@@ -44,7 +44,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.API {
 			_resp.OutputStream.Write (buf, 0, buf.Length);
 		}
 
-		public abstract void HandleRequest (HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+		public abstract void HandleRequest (WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
 			int _permissionLevel);
 
 		public virtual int DefaultPermissionLevel () {

@@ -25,7 +25,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers {
 
 		public static ItemIconHandler Instance { get; private set; }
 
-		public override void HandleRequest (HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+		public override void HandleRequest (WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
 			int _permissionLevel) {
 			if (!loaded) {
 				_resp.StatusCode = (int) HttpStatusCode.InternalServerError;

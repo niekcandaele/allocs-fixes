@@ -7,7 +7,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.API {
 	internal class GetAnimalsLocation : WebAPI {
 		private readonly List<EntityAnimal> animals = new List<EntityAnimal> ();
 
-		public override void HandleRequest (HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+		public override void HandleRequest (WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
 			int _permissionLevel) {
 			JSONArray animalsJsResult = new JSONArray ();
 

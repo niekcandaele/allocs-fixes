@@ -5,7 +5,7 @@ using AllocsFixes.PersistentData;
 
 namespace AllocsFixes.NetConnections.Servers.Web.API {
 	public class GetPlayerInventory : WebAPI {
-		public override void HandleRequest (HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+		public override void HandleRequest (WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
 			int _permissionLevel) {
 			if (_req.QueryString ["steamid"] == null) {
 				_resp.StatusCode = (int) HttpStatusCode.BadRequest;
@@ -30,7 +30,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.API {
 			WriteJSON (_resp, result);
 		}
 
-		internal static void GetInventoryArguments (HttpListenerRequest _req, out bool _showIconColor, out bool _showIconName) {
+		internal static void GetInventoryArguments (WebSocketSharp.Net.HttpListenerRequest _req, out bool _showIconColor, out bool _showIconName) {
 			if (_req.QueryString ["showiconcolor"] == null || !bool.TryParse (_req.QueryString ["showiconcolor"], out _showIconColor)) {
 				_showIconColor = true;
 			}

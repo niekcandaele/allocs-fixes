@@ -17,7 +17,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers {
 			logMissingFiles = _logMissingFiles;
 		}
 
-		public override void HandleRequest (HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
+		public override void HandleRequest (WebSocketSharp.Net.HttpListenerRequest _req, WebSocketSharp.Net.HttpListenerResponse _resp, WebConnection _user,
 			int _permissionLevel) {
 			string fn = _req.Url.AbsolutePath.Remove (0, staticPart.Length);
 
