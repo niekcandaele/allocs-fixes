@@ -5,6 +5,9 @@ using AllocsFixes.JSON;
 using System.Collections.Generic;
 using System.Linq;
 
+// Implemented following HTML spec
+// https://html.spec.whatwg.org/multipage/server-sent-events.html
+
 namespace AllocsFixes.NetConnections.Servers.Web.Handlers
 {
     public class SSEHandler : PathHandler
@@ -29,10 +32,16 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
 
         private void LogCallback(string _msg, string _trace, LogType _type)
         {
-            JSONObject obj = new JSONObject();
-            obj.Add("msg", new JSONString(_msg));
-            obj.Add("type", new JSONString(_type.ToString()));
-            obj.Add("trace", new JSONString(_trace));
+            StringBuilder sb = new StringBuilder();
+
+            JSONObject data = new JSONObject();
+            data.Add("msg", new JSONString(_msg));
+            data.Add("type", new JSONString(_type.ToString()));
+            data.Add("trace", new JSONString(_trace));
+
+            sb.AppendLine("event: logLine");
+            sb.AppendLine($"data: {data.ToString()}");
+            sb.AppendLine("");
 
             // Create a copy of the list, so we can remove elements while iterating
             List<HttpListenerResponse> copy = this.openResps.ToList();
@@ -43,7 +52,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
 
                     if (_resp.OutputStream.CanWrite)
                     {
-                        byte[] buf = Encoding.UTF8.GetBytes(obj.ToString());
+                        byte[] buf = Encoding.UTF8.GetBytes(sb.ToString());
                         _resp.OutputStream.Write(buf, 0, buf.Length);
                         _resp.OutputStream.Flush();
                     }
