@@ -18,16 +18,13 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
         public override void HandleRequest(HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
             int _permissionLevel)
         {
-            Log.Out("HANDLING A SSE THING");
-
             // Keep the request open
-            _resp.KeepAlive = true;
+            _resp.SendChunked = true;
 
             _resp.AddHeader("Content-Type", "text/event-stream");
             _resp.OutputStream.Flush();
 
             openResps.Add(_resp);
-            Log.Out($"OpenResps = {openResps.Count}");
         }
 
         private void LogCallback(string _msg, string _trace, LogType _type)

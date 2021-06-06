@@ -295,7 +295,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
             }
             finally
             {
-                if (ctx != null && !ctx.Response.SendChunked && !ctx.Response.KeepAlive)
+                if (ctx != null && !ctx.Response.SendChunked)
                 {
                     ctx.Response.Close();
                 }
