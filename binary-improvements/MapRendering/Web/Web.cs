@@ -117,6 +117,10 @@ namespace AllocsFixes.NetConnections.Servers.Web
                     new ApiHandler("/api/")
                 );
 
+                handlers.Add(
+                    "/sse/",
+                    new SSEHandler()
+                );
 
                 connectionHandler = new ConnectionHandler();
 
@@ -291,7 +295,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
             }
             finally
             {
-                if (ctx != null && !ctx.Response.SendChunked)
+                if (ctx != null && !ctx.Response.SendChunked && !ctx.Response.KeepAlive)
                 {
                     ctx.Response.Close();
                 }
