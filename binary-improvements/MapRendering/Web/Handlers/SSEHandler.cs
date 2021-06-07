@@ -62,10 +62,12 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
                         this.openResps.Remove(_resp);
                     }
                 }
-                catch (System.Exception)
+                catch (System.Exception e)
                 {
                     _resp.OutputStream.Close();
                     this.openResps.Remove(_resp);
+                    Log.Error ("Exception while handling SSE log send:");
+                    Log.Exception (e);
                 }
 
             });
