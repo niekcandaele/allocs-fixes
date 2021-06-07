@@ -43,6 +43,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
             sb.AppendLine($"data: {data.ToString()}");
             sb.AppendLine("");
 
+            string output = sb.ToString();
             // Create a copy of the list, so we can remove elements while iterating
             List<HttpListenerResponse> copy = this.openResps.ToList();
             copy.ForEach(_resp =>
@@ -52,7 +53,7 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
 
                     if (_resp.OutputStream.CanWrite)
                     {
-                        byte[] buf = Encoding.UTF8.GetBytes(sb.ToString());
+                        byte[] buf = Encoding.UTF8.GetBytes(output);
                         _resp.OutputStream.Write(buf, 0, buf.Length);
                         _resp.OutputStream.Flush();
                     }
