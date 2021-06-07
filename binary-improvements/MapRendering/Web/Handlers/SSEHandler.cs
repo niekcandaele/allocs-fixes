@@ -44,10 +44,9 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
             sb.AppendLine("");
 
             string output = sb.ToString();
-            // Create a copy of the list, so we can remove elements while iterating
-            List<HttpListenerResponse> copy = this.openResps.ToList();
-            copy.ForEach(_resp =>
+            for (int i = openResps.Count - 1; i >= 0; i--)
             {
+                HttpListenerResponse _resp = openResps[i];
                 try
                 {
 
@@ -59,19 +58,18 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
                     }
                     else
                     {
-                        this.openResps.Remove(_resp);
+                        this.openResps.RemoveAt (i);
                     }
                 }
                 catch (System.Exception e)
                 {
                     _resp.OutputStream.Close();
-                    this.openResps.Remove(_resp);
-                    Log.Error ("Exception while handling SSE log send:");
-                    Log.Exception (e);
+                    this.openResps.RemoveAt (i);
+                    Log.Error("Exception while handling SSE log send:");
+                    Log.Exception(e);
                 }
+            }
 
-            });
         }
-
     }
 }
