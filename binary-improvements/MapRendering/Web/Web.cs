@@ -119,7 +119,7 @@ namespace AllocsFixes.NetConnections.Servers.Web
 
                 handlers.Add(
                     "/sse/",
-                    new SSEHandler()
+                    new SSEHandler("sse")
                 );
 
                 connectionHandler = new ConnectionHandler();
