@@ -12,22 +12,34 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
 {
     public class SSEHandler : PathHandler
     {
-        private List<HttpListenerResponse> openResps = new List<HttpListenerResponse>();
+        private List<HttpListenerResponse> openLogResps = new List<HttpListenerResponse>();
+        private readonly string moduleName;
         public SSEHandler(string _moduleName = null) : base(_moduleName)
         {
             Logger.Main.LogCallbacks += LogCallback;
+            moduleName = _moduleName;
         }
 
         public override void HandleRequest(HttpListenerRequest _req, HttpListenerResponse _resp, WebConnection _user,
             int _permissionLevel)
         {
+            string apiName = _req.Url.AbsolutePath.Remove (0, moduleName.Length + 2);
+
             // Keep the request open
             _resp.SendChunked = true;
 
             _resp.AddHeader("Content-Type", "text/event-stream");
             _resp.OutputStream.Flush();
 
-            openResps.Add(_resp);
+            switch (apiName)
+            {
+                case "log":
+                    openLogResps.Add(_resp);
+                    break;
+                default:
+                    _resp.StatusCode = (int)HttpStatusCode.NotFound;
+                    break;
+            }
         }
 
         private void LogCallback(string _msg, string _trace, LogType _type)
@@ -44,9 +56,9 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
             sb.AppendLine("");
 
             string output = sb.ToString();
-            for (int i = openResps.Count - 1; i >= 0; i--)
+            for (int i = openLogResps.Count - 1; i >= 0; i--)
             {
-                HttpListenerResponse _resp = openResps[i];
+                HttpListenerResponse _resp = openLogResps[i];
                 try
                 {
 
@@ -58,13 +70,13 @@ namespace AllocsFixes.NetConnections.Servers.Web.Handlers
                     }
                     else
                     {
-                        this.openResps.RemoveAt (i);
+                        this.openLogResps.RemoveAt (i);
                     }
                 }
                 catch (System.Exception e)
                 {
                     _resp.OutputStream.Close();
-                    this.openResps.RemoveAt (i);
+                    this.openLogResps.RemoveAt (i);
                     Log.Error("Exception while handling SSE log send:");
                     Log.Exception(e);
                 }
