@@ -93,7 +93,7 @@
     <Compile Include="Web\Handlers\SimpleRedirectHandler.cs" />
     <Compile Include="Web\Handlers\StaticHandler.cs" />
     <Compile Include="Web\Handlers\SessionHandler.cs" />
-    <Compile Include="Web\Handlers\WebSocketHandler.cs" />
+    <Compile Include="Web\Handlers\SSEHandler.cs" />
     <Compile Include="Web\API\ExecuteConsoleCommand.cs" />
     <Compile Include="Commands\ReloadWebPermissions.cs" />
     <Compile Include="Web\Handlers\UserStatusHandler.cs" />

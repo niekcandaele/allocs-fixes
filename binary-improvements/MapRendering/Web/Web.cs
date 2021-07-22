@@ -117,6 +117,10 @@ namespace AllocsFixes.NetConnections.Servers.Web
                     new ApiHandler("/api/")
                 );
 
+                handlers.Add(
+                    "/sse/",
+                    new SSEHandler("sse")
+                );
 
                 connectionHandler = new ConnectionHandler();
 
